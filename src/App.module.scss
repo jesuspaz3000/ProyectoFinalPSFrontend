@@ -1,0 +1,61 @@
+/* src/App.module.scss */
+
+body {
+  font-family: 'Roboto', sans-serif;
+}
+
+.AppHeader {
+  h1 {
+    color: blue;
+    text-align: center;
+  }
+}
+
+.AppMain {
+  margin: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .component {
+    display: flex;
+    flex-direction: column; /* Asegura alineación vertical */
+    margin-left: 40px;
+    align-items: center;
+    padding: 20px;
+    min-height: 200px; /* Ajustar según la altura deseada */
+
+    h2{
+      color: red;
+    }
+  }
+}
+
+form {
+  margin: 10px;
+  font-size: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+input {
+  margin-right: 10px;
+  padding: 5px;
+  border: none;
+}
+
+button{
+  width: 80px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  cursor: pointer;
+  border: none;
+  border-radius: 5px;
+  transition: .2s;
+
+  &:hover{
+    background-color: red;
+    color: white;
+  }
+}

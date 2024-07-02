@@ -1,23 +1,26 @@
-import logo from './logo.svg';
-import './App.css';
+// src/App.js
+import React from 'react';
+import InsertWord from './components/insertwords/InsertWord';
+import SearchWord from './components/searchwords/SearchWord';
+import DeleteWord from './components/deletewords/DeleteWord';
+import TraverseTree from './components/traversetree/TraverseTree';
+import CanvasTree from './components/canvastree/CanvasTree';
+
+import styles from './App.module.scss';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+    <div>
+      <header className={styles.AppHeader}>
+        <h1>B Tree</h1>
       </header>
+      <main className={styles.AppMain}>
+        <div className={styles.component}><InsertWord /></div>
+        <div className={styles.component}><SearchWord /></div>
+        <div className={styles.component}><DeleteWord /></div>
+        <div className={styles.component}><TraverseTree /></div>
+      </main>
+      <CanvasTree />
     </div>
   );
 }
