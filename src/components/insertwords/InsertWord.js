@@ -6,15 +6,21 @@ import styles from './InsertWord.module.scss'; // Importa como módulo
 const InsertWord = () => {
     const [word, setWord] = useState('');
     const [response, setResponse] = useState('');
+    const [error, setError] = useState(null);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const result = await insertWord(word);
-        setResponse(result.message || result.error);
+        setError(null);
+        try {
+            const result = await insertWord(word);
+            setResponse(result.message || 'Palabra insertada con éxito');
+        } catch (err) {
+            setError(err.message || 'Error al insertar la palabra');
+        }
     };
 
     return (
-        <div className={styles.InsertWord}> {/* Asegúrate de usar la clase aquí */}
+        <div className={styles.InsertWord}>
             <h2>Insertar</h2>
             <form onSubmit={handleSubmit}>
                 <input
@@ -25,7 +31,8 @@ const InsertWord = () => {
                 />
                 <button type="submit">Insertar</button>
             </form>
-            <p>{response}</p>
+            {response && <p>{response}</p>}
+            {error && <p className={styles.error}>{error}</p>}
         </div>
     );
 };
