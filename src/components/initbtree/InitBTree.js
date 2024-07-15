@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { initBTree } from '../../api';
 import styles from './InitBTree.module.scss';
 
-const InitBTree = ({ setDegree }) => {
+const InitBTree = ({ setTree }) => {
     const [degree, setLocalDegree] = useState('');
     const [message, setMessage] = useState('');
 
@@ -11,7 +11,7 @@ const InitBTree = ({ setDegree }) => {
         e.preventDefault();
         const result = await initBTree(degree);
         setMessage(result.message || result.error);
-        setDegree(degree);
+        setTree(result.tree);
     };
 
     return (

@@ -2,18 +2,17 @@ import React, { useState } from 'react';
 import { searchWord } from '../../api';
 import styles from './SearchWord.module.scss';
 
-const SearchWord = () => {
+const SearchWord = ({ setTree }) => {
     const [word, setWord] = useState('');
     const [response, setResponse] = useState('');
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         const result = await searchWord(word);
-        if (result.found) {
-            setResponse(`Found: ${word}`);
-        } else {
-            setResponse(`Not Found: ${word}`);
+        if (result.tree) {
+            setTree(result.tree);
         }
+        setResponse(result.message || result.error);
     };
 
     return (

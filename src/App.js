@@ -1,4 +1,3 @@
-// src/App.js
 import React, { useState } from 'react';
 import InsertWord from './components/insertwords/InsertWord';
 import SearchWord from './components/searchwords/SearchWord';
@@ -9,8 +8,17 @@ import CanvasTree from './components/canvastree/CanvasTree';
 import styles from './App.module.scss';
 
 function App() {
-  const [keys, setKeys] = useState([]);
-  const [degree, setDegree] = useState(null);
+  const [tree, setTree] = useState({ degree: 0, keys: [] });
+
+  const updateTree = (newTree) => {
+    if (newTree && newTree.tree) {
+      setTree(newTree.tree);
+    } else if (newTree && newTree.keys) {
+      setTree(newTree);
+    } else {
+      console.error('Unexpected tree structure:', newTree);
+    }
+  };
 
   return (
     <div>
@@ -18,19 +26,13 @@ function App() {
         <h1>B Tree</h1>
       </header>
       <main className={styles.AppMain}>
-        <div className={styles.component}><InitBTree setDegree={setDegree} /></div>
-        {degree && (
-          <>
-            <div className={styles.component}><InsertWord /></div>
-            <div className={styles.component}><SearchWord /></div>
-            <div className={styles.component}><DeleteWord /></div>
-            <div className={styles.component}>
-              <TraverseTree setKeys={setKeys} />
-            </div>
-          </>
-        )}
+        <div className={styles.component}><InitBTree setTree={updateTree} /></div>
+        <div className={styles.component}><InsertWord setTree={updateTree} /></div>
+        <div className={styles.component}><SearchWord setTree={updateTree} /></div>
+        <div className={styles.component}><DeleteWord setTree={updateTree} /></div>
+        <div className={styles.component}><TraverseTree setTree={updateTree} /></div>
       </main>
-      <CanvasTree keys={keys} />
+      <CanvasTree tree={tree} />
     </div>
   );
 }

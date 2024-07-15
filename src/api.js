@@ -1,4 +1,4 @@
-const apiBaseUrl = 'http://colocaripaquixd:8000';
+const apiBaseUrl = 'http://192.168.0.195:8000';
 
 export const initBTree = async (degree) => {
     const response = await fetch(`${apiBaseUrl}/init`, {

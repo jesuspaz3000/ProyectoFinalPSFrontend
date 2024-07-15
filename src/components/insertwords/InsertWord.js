@@ -1,38 +1,33 @@
-// src/components/InsertWord.js
 import React, { useState } from 'react';
 import { insertWord } from '../../api';
-import styles from './InsertWord.module.scss'; // Importa como módulo
+import styles from './InsertWord.module.scss';
 
-const InsertWord = () => {
+const InsertWord = ({ setTree }) => {
     const [word, setWord] = useState('');
-    const [response, setResponse] = useState('');
-    const [error, setError] = useState(null);
+    const [message, setMessage] = useState('');
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError(null);
-        try {
-            const result = await insertWord(word);
-            setResponse(result.message || 'Palabra insertada con éxito');
-        } catch (err) {
-            setError(err.message || 'Error al insertar la palabra');
+        const result = await insertWord(word);
+        if (result.tree) {
+            setTree(result);  // Pasar todo el objeto result
         }
+        setMessage(result.message || result.error || 'Word inserted successfully');
     };
 
     return (
         <div className={styles.InsertWord}>
-            <h2>Insertar</h2>
+            <h2>Insertar Palabra</h2>
             <form onSubmit={handleSubmit}>
                 <input
                     type="text"
                     value={word}
                     onChange={(e) => setWord(e.target.value)}
-                    placeholder="Ingresa dato"
+                    placeholder="Ingresa palabra"
                 />
                 <button type="submit">Insertar</button>
             </form>
-            {response && <p>{response}</p>}
-            {error && <p className={styles.error}>{error}</p>}
+            <p>{message}</p>
         </div>
     );
 };
