@@ -31,25 +31,25 @@ const CanvasTree = ({ tree }) => {
         return widthsAtDepth;
     }, []);
 
-    const drawNode = useCallback((ctx, node, x, y, width) => {
+    const drawNode = useCallback((ctx, node, x, y, width, scale) => {
         if (!node || !node.keys || !Array.isArray(node.keys) || node.keys.length === 0) {
-            return; // No dibujamos nada si el nodo es inválido o no tiene claves
+            return;
         }
-    
-        const nodeWidth = node.keys.length * 40;
-        const nodeHeight = 40;
-    
+
+        const nodeWidth = node.keys.length * 40 * scale;
+        const nodeHeight = 40 * scale;
+
         // Dibujar el nodo
         ctx.fillStyle = 'white';
         ctx.fillRect(x - nodeWidth / 2, y, nodeWidth, nodeHeight);
         ctx.strokeRect(x - nodeWidth / 2, y, nodeWidth, nodeHeight);
-    
+
         // Dibujar las claves
         ctx.fillStyle = 'black';
-        ctx.font = '14px Arial';
+        ctx.font = `${14 * scale}px Arial`;
         node.keys.forEach((key, index) => {
-            const keyX = x - nodeWidth / 2 + index * 40 + 10;
-            ctx.fillText(key.toString(), keyX, y + 25);
+            const keyX = x - nodeWidth / 2 + index * 40 * scale + 10 * scale;
+            ctx.fillText(key.toString(), keyX, y + 25 * scale);
         });
 
         // Dibujar los hijos
@@ -57,7 +57,7 @@ const CanvasTree = ({ tree }) => {
             const childWidth = width / node.children.length;
             node.children.forEach((child, index) => {
                 const childX = x - width / 2 + childWidth * (index + 0.5);
-                const childY = y + 80;
+                const childY = y + 80 * scale;
 
                 // Dibujar línea al hijo
                 ctx.beginPath();
@@ -66,7 +66,7 @@ const CanvasTree = ({ tree }) => {
                 ctx.stroke();
 
                 // Dibujar hijo recursivamente
-                drawNode(ctx, child, childX, childY, childWidth);
+                drawNode(ctx, child, childX, childY, childWidth, scale);
             });
         }
     }, []);
@@ -76,34 +76,64 @@ const CanvasTree = ({ tree }) => {
         if (!canvas) return;
 
         const ctx = canvas.getContext('2d');
+        const containerWidth = canvas.offsetWidth;
+        const containerHeight = canvas.offsetHeight;
+
+        // Ajusta el tamaño del canvas al contenedor
+        canvas.width = containerWidth;
+        canvas.height = containerHeight;
 
         // Asegurarse de que estamos trabajando con la estructura correcta del árbol
         const rootNode = treeData.tree || treeData;
         if (!rootNode || typeof rootNode !== 'object' || !rootNode.keys || rootNode.keys.length === 0) {
-            // Limpiar el canvas si el árbol está vacío o es inválido
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             return;
         }
 
-        // Calcular el tamaño dinámico del canvas
+        // Calcular las dimensiones del árbol
         const depth = getTreeDepth(rootNode);
         const nodesAtDepth = getMaxNodesAtDepth(rootNode);
         const widthsAtDepth = getMaxWidthAtDepth(rootNode);
         const maxNodes = Math.max(...nodesAtDepth);
         const maxWidth = Math.max(...widthsAtDepth);
-        const height = depth * 100; // Ajuste del factor de altura por nivel
-        const width = maxNodes * maxWidth + 200; // Ajuste del factor de ancho por nodo máximo con un margen adicional
+        const treeHeight = depth * 100;
+        const treeWidth = maxNodes * maxWidth + 200;
 
-        canvas.width = width;
-        canvas.height = height;
-        ctx.clearRect(0, 0, width, height);
+        // Calcular el factor de escala para ajustar el árbol al canvas
+        const scaleX = containerWidth / treeWidth;
+        const scaleY = containerHeight / treeHeight;
+        const scale = Math.min(scaleX, scaleY, 1);
 
-        drawNode(ctx, rootNode, width / 2, 50, width);
+        // Aplicar la escala
+        ctx.scale(scale, scale);
+
+        // Centrar el árbol
+        const offsetX = (containerWidth / scale - treeWidth) / 2;
+        const offsetY = (containerHeight / scale - treeHeight) / 2;
+        ctx.translate(offsetX, offsetY);
+
+        // Dibujar el árbol
+        drawNode(ctx, rootNode, treeWidth / 2, 50, treeWidth, scale);
     }, [drawNode, getTreeDepth, getMaxNodesAtDepth, getMaxWidthAtDepth]);
 
     useEffect(() => {
-        const animationFrameId = requestAnimationFrame(() => drawTree(tree));
-        return () => cancelAnimationFrame(animationFrameId);
+        const resizeObserver = new ResizeObserver(() => {
+            drawTree(tree);
+        });
+
+        const currentCanvasRef = canvasRef.current;
+
+        if (currentCanvasRef) {
+            resizeObserver.observe(currentCanvasRef);
+        }
+
+        drawTree(tree);
+
+        return () => {
+            if (currentCanvasRef) {
+                resizeObserver.unobserve(currentCanvasRef);
+            }
+        };
     }, [tree, drawTree]);
 
     return (
