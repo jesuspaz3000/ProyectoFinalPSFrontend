@@ -1,8 +1,14 @@
 .canvasContainer {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 20px;
-    border: 1px solid #ccc;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  width: 100%;
+  height: 100%;
+  overflow: auto; /* Permite el desplazamiento si el contenido se desborda */
+  canvas {
+      border: none; /* Remover borde */
+      width: auto; /* Ajustar el ancho automáticamente basado en el contenido */
+      height: auto; /* Ajustar la altura automáticamente basado en el contenido */
   }
-  
+}

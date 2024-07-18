@@ -2,16 +2,20 @@ import React, { useState } from 'react';
 import { traverseTree } from '../../api';
 import styles from './TraverseTree.module.scss';
 
-const TraverseTree = ({ setTree }) => {
+const TraverseTree = ({ setTraverseResult }) => {
     const [error, setError] = useState('');
 
     const handleTraverse = async () => {
-        const result = await traverseTree();
-        if (result.tree) {
-            setTree(result.tree);
-            setError(''); // Limpiar error si la operación es exitosa
-        } else {
-            setError(result.error);
+        try {
+            const result = await traverseTree();
+            if (result.traverse) {
+                setTraverseResult(result.traverse);
+                setError(''); // Limpiar error si la operación es exitosa
+            } else {
+                setError('Error: Traverse result is empty.');
+            }
+        } catch (error) {
+            setError('Error: ' + error.message);
         }
     };
 
