@@ -3,6 +3,7 @@ import styles from './CanvasTree.module.scss';
 
 const CanvasTree = ({ tree }) => {
     const canvasRef = useRef(null);
+    const resizeObserverRef = useRef(null); // Ref para almacenar el ResizeObserver
 
     const getTreeDepth = useCallback((node) => {
         if (!node || !node.children || node.children.length === 0) return 1;
@@ -76,8 +77,8 @@ const CanvasTree = ({ tree }) => {
         if (!canvas) return;
 
         const ctx = canvas.getContext('2d');
-        const containerWidth = canvas.offsetWidth;
-        const containerHeight = canvas.offsetHeight;
+        const containerWidth = canvas.parentNode.offsetWidth;
+        const containerHeight = canvas.parentNode.offsetHeight;
 
         // Ajusta el tamaño del canvas al contenedor
         canvas.width = containerWidth;
@@ -104,6 +105,12 @@ const CanvasTree = ({ tree }) => {
         const scaleY = containerHeight / treeHeight;
         const scale = Math.min(scaleX, scaleY, 1);
 
+        // Guardar el estado de la escala y la traducción actuales
+        ctx.save();
+
+        // Limpiar el canvas antes de aplicar nuevas transformaciones
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
         // Aplicar la escala
         ctx.scale(scale, scale);
 
@@ -114,25 +121,42 @@ const CanvasTree = ({ tree }) => {
 
         // Dibujar el árbol
         drawNode(ctx, rootNode, treeWidth / 2, 50, treeWidth, scale);
+
+        // Restaurar el estado del contexto después de dibujar
+        ctx.restore();
     }, [drawNode, getTreeDepth, getMaxNodesAtDepth, getMaxWidthAtDepth]);
 
     useEffect(() => {
         const resizeObserver = new ResizeObserver(() => {
-            drawTree(tree);
+            requestAnimationFrame(() => {
+                drawTree(tree);
+            });
         });
 
+        resizeObserverRef.current = resizeObserver;
         const currentCanvasRef = canvasRef.current;
 
         if (currentCanvasRef) {
             resizeObserver.observe(currentCanvasRef);
         }
 
+        window.addEventListener('resize', () => {
+            requestAnimationFrame(() => {
+                drawTree(tree);
+            });
+        });
+
         drawTree(tree);
 
         return () => {
-            if (currentCanvasRef) {
-                resizeObserver.unobserve(currentCanvasRef);
+            if (resizeObserverRef.current && currentCanvasRef) {
+                resizeObserverRef.current.unobserve(currentCanvasRef);
             }
+            window.removeEventListener('resize', () => {
+                requestAnimationFrame(() => {
+                    drawTree(tree);
+                });
+            });
         };
     }, [tree, drawTree]);
 

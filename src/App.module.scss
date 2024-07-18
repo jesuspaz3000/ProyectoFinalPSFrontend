@@ -11,7 +11,7 @@
   background-color: #0000FF; // Blue
   padding: 10px 0;
   text-align: center;
-  
+
   h1 {
     color: white;
     margin: 0;
@@ -21,10 +21,19 @@
 
 .controls {
   display: flex;
-  justify-content: space-around;
   flex-wrap: wrap;
+  justify-content: space-around;
   padding: 10px;
   gap: 10px;
+
+  @media (max-width: 1200px) {
+    justify-content: center;
+  }
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: stretch;
+  }
 }
 
 .component {
@@ -35,15 +44,29 @@
   flex: 1;
   min-width: 150px;
   max-width: calc(20% - 10px);
+
+  @media (max-width: 1200px) {
+    max-width: calc(33% - 10px); // Ajusta el tamaño de los componentes para 3 por fila
+  }
+
+  @media (max-width: 768px) {
+    max-width: 100%;
+  }
 }
 
 .AppMain {
   flex: 1;
   display: flex;
+  flex-direction: column; // Ajusta para que el contenido se apile verticalmente
   justify-content: center;
   align-items: center;
   padding: 10px;
   overflow: hidden;
+
+  @media (max-width: 768px) {
+    padding: 5px; // Ajusta el padding en pantallas pequeñas
+    height: auto; // Asegura que el contenedor tenga una altura adecuada
+  }
 }
 
 .visualization {
@@ -53,6 +76,10 @@
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   overflow: auto; // Permite scroll si el contenido es más grande
+
+  @media (max-width: 768px) {
+    height: 60vh; // Ligeramente más pequeño en móviles
+  }
 }
 
 .traverseResult, .loading, .error {
@@ -81,8 +108,9 @@ form {
 
   input {
     padding: 5px;
+    flex: 1;
+    min-width: 0; // Asegura que el input no se haga más grande que su contenedor
   }
-  
 }
 
 button {
@@ -96,6 +124,16 @@ button {
   &:hover {
     background-color: red;
     color: white;
+  }
+
+  @media (max-width: 1200px) {
+    width: 70px;
+    padding: 4px;
+  }
+
+  @media (max-width: 768px) {
+    width: 100%;
+    padding: 10px;
   }
 }
 
@@ -116,5 +154,14 @@ p {
 
   .visualization {
     height: 60vh; // Ligeramente más pequeño en móviles
+  }
+
+  form {
+    flex-direction: column;
+    gap: 10px;
+
+    input, button {
+      width: 100%;
+    }
   }
 }
