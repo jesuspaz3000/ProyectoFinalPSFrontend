@@ -5,7 +5,7 @@ import styles from './SearchWord.module.scss';
 const SearchWord = ({ isEnabled }) => {
     const [number, setNumber] = useState('');
     const [response, setResponse] = useState('');
-    const inputRef = useRef(null); // Crear referencia para el input
+    const inputRef = useRef(null);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -14,11 +14,11 @@ const SearchWord = ({ isEnabled }) => {
                 const result = await searchNumber(parseInt(number, 10));
                 setResponse(result.message || result.error);
                 setNumber(''); // Limpiar el input después de la búsqueda
-                inputRef.current.blur(); // Desenfocar el input
+                inputRef.current.focus(); // Mantener el foco en el input
             } catch (error) {
                 setResponse('Error al buscar: ' + error.message);
                 setNumber(''); // Limpiar el input en caso de error
-                inputRef.current.blur(); // Desenfocar el input
+                inputRef.current.focus(); // Mantener el foco en el input
             }
         }
     };
@@ -28,7 +28,7 @@ const SearchWord = ({ isEnabled }) => {
             <h2>Buscar</h2>
             <form onSubmit={handleSubmit}>
                 <input
-                    ref={inputRef} // Asignar la referencia al input
+                    ref={inputRef}
                     type="number"
                     value={number}
                     onChange={(e) => setNumber(e.target.value)}

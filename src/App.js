@@ -5,7 +5,7 @@ import SearchWord from './components/searchwords/SearchWord';
 import DeleteWord from './components/deletewords/DeleteWord';
 import TraverseTree from './components/traversetree/TraverseTree';
 import CanvasTree from './components/canvastree/CanvasTree';
-import { getTreeStructure, initBTree, insertNumber, deleteNumber } from './api';
+import { getTreeStructure, insertNumber, deleteNumber } from './api';
 import styles from './App.module.scss';
 
 function App() {
@@ -29,18 +29,10 @@ function App() {
     }
   }, []);
 
-  const handleInit = async (degree) => {
-    try {
-      setLoading(true);
-      const result = await initBTree(degree);
-      setTree(result.tree);
-      setError(null);
-    } catch (error) {
-      console.error('Error al inicializar el árbol:', error);
-      setError(`Error al inicializar el árbol: ${error.message}`);
-    } finally {
-      setLoading(false);
-    }
+  const handleInit = (newTree) => {
+    console.log('Nuevo árbol inicializado:', newTree);
+    setTree(newTree);
+    setError(null);
   };
 
   const handleInsert = async (number) => {
@@ -93,7 +85,7 @@ function App() {
       </header>
       <div className={styles.controls}>
         <div className={styles.component}>
-          <InitBTree setTree={handleInit} />
+          <InitBTree onInitialize={handleInit} />
         </div>
         <div className={styles.component}>
           <InsertWord handleInsert={handleInsert} isEnabled={!loading} />

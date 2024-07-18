@@ -18,11 +18,11 @@ const DeleteWord = ({ setTree, isEnabled }) => {
                     setMessage('Eliminación exitosa');
                 }
                 setNumber('');
-                setTimeout(() => inputRef.current.blur(), 100); // Desenfocar el input después de un breve retraso
+                inputRef.current.focus(); // Mantener el foco en el input
             } catch (error) {
                 console.error('Error al eliminar número:', error);
                 setMessage('Error al eliminar: ' + error.message);
-                setTimeout(() => inputRef.current.blur(), 100); // Desenfocar el input después de un breve retraso
+                inputRef.current.focus(); // Mantener el foco en el input en caso de error
             }
         }
     }, [number, isEnabled, setTree]);

@@ -28,11 +28,11 @@ const InsertWord = ({ handleInsert, isEnabled }) => {
                     setMessage('Error: Estructura del árbol no recibida');
                 }
                 setNumber('');
-                setTimeout(() => inputRef.current.blur(), 100); // Desenfocar el input después de un breve retraso
+                inputRef.current.focus(); // Mantener el foco en el input
             } catch (error) {
                 console.error('Error inserting number:', error);
                 setMessage('Error al insertar: ' + error.message);
-                setTimeout(() => inputRef.current.blur(), 100); // Desenfocar el input después de un breve retraso
+                inputRef.current.focus(); // Mantener el foco en el input en caso de error
             }
         }
     }, [number, isEnabled, handleInsert]);
