@@ -1,4 +1,4 @@
-const apiBaseUrl = 'http://192.168.0.167:8000';
+const apiBaseUrl = 'http://pon tu ip aqui xddd:8000';
 
 export const initBTree = async (degree) => {
     try {
